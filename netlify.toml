@@ -1,0 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+# /api/strava/callback -> netlify/functions/strava-callback, etc.
+[[redirects]]
+  from = "/api/strava/*"
+  to = "/.netlify/functions/strava-:splat"
+  status = 200
+
+# SPA fallback — the two screens are client-routed.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
