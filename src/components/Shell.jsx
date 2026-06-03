@@ -2,71 +2,114 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Settings } from './Settings.jsx'
 
-// App shell: sticky wordmark bar (with settings) + fixed bottom tab nav.
+const NAV = [
+  { to: '/', label: 'Dashboard', end: true, Icon: ActivityIcon },
+  { to: '/progress', label: 'Progress', end: false, Icon: ChartIcon },
+]
+
+// Responsive shell. Mobile: sticky top bar + fixed bottom tab nav, single column.
+// Desktop (lg+): a left sidebar (nav + sync + settings) and a wide content area,
+// so the dashboard reads as a panel grid instead of a stranded phone column.
 export function Shell({ status, children }) {
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const open = () => setSettingsOpen(true)
 
   return (
     <div className="min-h-full">
-      <header className="sticky top-0 z-20 border-b border-line bg-bg">
+      {/* Desktop sidebar */}
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-60 flex-col border-r border-line bg-bg p-5 lg:flex">
+        <Wordmark />
+        <nav className="mt-8 flex flex-col gap-1">
+          {NAV.map(({ to, label, end, Icon }) => (
+            <NavLink key={to} to={to} end={end} className={sideLink}>
+              {({ isActive }) => (
+                <>
+                  <Icon active={isActive} />
+                  <span>{label}</span>
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="mt-auto flex items-center justify-between border-t border-line pt-4">
+          {status}
+          <SettingsButton onClick={open} />
+        </div>
+      </aside>
+
+      {/* Mobile top bar */}
+      <header className="sticky top-0 z-20 border-b border-line bg-bg lg:hidden">
         <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
-          <span className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-[3px] bg-accent" />
-            <span className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-muted">
-              100 Mile Project
-            </span>
-          </span>
+          <Wordmark />
           <span className="flex items-center gap-3">
             {status}
-            <button
-              type="button"
-              onClick={() => setSettingsOpen(true)}
-              aria-label="Settings"
-              className="text-faint transition-colors hover:text-muted"
-            >
-              <GearIcon />
-            </button>
+            <SettingsButton onClick={open} />
           </span>
         </div>
       </header>
 
-      <main className="mx-auto max-w-md px-4 pb-28 pt-4">{children}</main>
+      {/* Content */}
+      <main className="lg:pl-60">
+        <div className="mx-auto w-full max-w-md px-4 pb-28 pt-4 lg:max-w-5xl lg:px-8 lg:pb-12 lg:pt-8">
+          {children}
+        </div>
+      </main>
 
-      <TabBar />
+      {/* Mobile bottom tab nav */}
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg lg:hidden">
+        <div className="mx-auto flex max-w-md" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          {NAV.map(({ to, label, end, Icon }) => (
+            <NavLink key={to} to={to} end={end} className={tabClass}>
+              {({ isActive }) => (
+                <>
+                  <Icon active={isActive} />
+                  <span>{label}</span>
+                </>
+              )}
+            </NavLink>
+          ))}
+        </div>
+      </nav>
+
       {settingsOpen && <Settings onClose={() => setSettingsOpen(false)} />}
     </div>
   )
+}
+
+function Wordmark() {
+  return (
+    <span className="flex items-center gap-2">
+      <span className="h-2.5 w-2.5 rounded-[3px] bg-accent" />
+      <span className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-muted">
+        100 Mile Project
+      </span>
+    </span>
+  )
+}
+
+function SettingsButton({ onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="Settings"
+      className="text-faint transition-colors hover:text-muted"
+    >
+      <GearIcon />
+    </button>
+  )
+}
+
+function sideLink({ isActive }) {
+  return `flex items-center gap-3 rounded-lg px-3 py-2 font-mono text-xs uppercase tracking-wider transition-colors ${
+    isActive ? 'bg-surface text-accent' : 'text-faint hover:bg-surface hover:text-muted'
+  }`
 }
 
 function tabClass({ isActive }) {
   return `flex flex-1 flex-col items-center gap-1 py-2.5 font-mono text-[0.625rem] uppercase tracking-wider transition-colors duration-150 ${
     isActive ? 'text-accent' : 'text-faint'
   }`
-}
-
-function TabBar() {
-  return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg">
-      <div className="mx-auto flex max-w-md" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-        <NavLink to="/" end className={tabClass}>
-          {({ isActive }) => (
-            <>
-              <ActivityIcon active={isActive} />
-              <span>Dashboard</span>
-            </>
-          )}
-        </NavLink>
-        <NavLink to="/progress" className={tabClass}>
-          {({ isActive }) => (
-            <>
-              <ChartIcon active={isActive} />
-              <span>Progress</span>
-            </>
-          )}
-        </NavLink>
-      </div>
-    </nav>
-  )
 }
 
 function ActivityIcon({ active }) {

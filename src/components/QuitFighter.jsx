@@ -18,7 +18,7 @@ export function QuitFighter({ activities, today }) {
 
   return (
     <section
-      className="animate-enter animate-attention rounded-xl border border-accent p-4"
+      className="animate-enter animate-attention mb-4 rounded-xl border border-accent p-4"
       style={{ background: 'color-mix(in oklch, var(--accent) 13%, var(--surface))' }}
     >
       <div className="label text-accent">Momentum at risk</div>

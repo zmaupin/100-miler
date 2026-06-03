@@ -28,8 +28,10 @@ export default function Progress() {
         <h1 className="text-xl font-bold tracking-tight text-ink">Progress</h1>
         <p className="mt-0.5 text-sm text-faint">Proof the work is working.</p>
       </div>
-      <div className="space-y-4">
-        <AerobicEfficiency activities={activities} />
+      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+        <div className="lg:col-span-2">
+          <AerobicEfficiency activities={activities} />
+        </div>
         <Cumulative activities={activities} />
         <WeeklyVolume activities={activities} today={today} />
         <LongRun activities={activities} today={today} />

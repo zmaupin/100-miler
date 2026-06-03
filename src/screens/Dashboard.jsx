@@ -92,22 +92,25 @@ export default function Dashboard() {
       {activities.length === 0 && syncing ? (
         <Skeleton />
       ) : (
-      <div className="space-y-4">
-        <QuitFighter activities={activities} today={today} />
-        <Today activities={activities} today={today} level={level} />
-        <Weather />
-        <NextRace activities={activities} today={today} />
-        <WeekStatus activities={activities} today={today} />
-        <LifetimeStats activities={activities} />
-        <RecentActivities activities={activities} />
-        <LevelManager
-          levelId={levelId}
-          onChangeLevel={(id) => {
-            setLevel(id)
-            setLevelId(id)
-          }}
-        />
-      </div>
+        <>
+          <QuitFighter activities={activities} today={today} />
+          {/* Masonry on desktop so the panels use the width instead of a stranded column. */}
+          <div className="columns-1 gap-4 [&>*]:mb-4 [&>*]:break-inside-avoid lg:columns-2 xl:columns-3">
+            <Today activities={activities} today={today} level={level} />
+            <Weather />
+            <NextRace activities={activities} today={today} />
+            <WeekStatus activities={activities} today={today} />
+            <LifetimeStats activities={activities} />
+            <RecentActivities activities={activities} />
+            <LevelManager
+              levelId={levelId}
+              onChangeLevel={(id) => {
+                setLevel(id)
+                setLevelId(id)
+              }}
+            />
+          </div>
+        </>
       )}
     </Shell>
   )
