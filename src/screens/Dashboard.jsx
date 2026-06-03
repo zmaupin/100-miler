@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useStravaData } from '../lib/useStravaData.js'
 import { buildAuthorizeUrl } from '../lib/stravaAuth.js'
 import { todayKey } from '../lib/calendar.js'
+import { QuitFighter } from '../components/QuitFighter.jsx'
 import { Today } from '../components/Today.jsx'
 import { NextRace } from '../components/NextRace.jsx'
 import { StreakCard } from '../components/StreakCard.jsx'
@@ -71,6 +72,7 @@ export default function Dashboard() {
 
       <SyncBar syncing={syncing} lastSyncAt={lastSyncAt} error={error} onSync={runSync} />
 
+      <QuitFighter activities={activities} today={today} />
       <Today activities={activities} today={today} />
       <NextRace activities={activities} today={today} />
       <StreakCard activities={activities} today={today} />

@@ -100,3 +100,19 @@ export function formatShortDate(activityOrKey) {
   const [, mo, d] = key.split('-').map(Number)
   return `${DOW[dowOfKey(key)]}, ${MONTHS[mo - 1]} ${d}`
 }
+
+const DOW_FULL = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+]
+
+// "Tuesday" from an activity or key.
+export function fullWeekday(activityOrKey) {
+  const key = typeof activityOrKey === 'string' ? activityOrKey : localDateKey(activityOrKey)
+  return key ? DOW_FULL[dowOfKey(key)] : ''
+}
