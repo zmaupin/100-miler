@@ -81,8 +81,6 @@ export default function Dashboard() {
       <LifetimeStats activities={activities} />
       <ThisWeek activities={activities} today={today} />
       <RecentActivities activities={activities} />
-
-      <p className="pt-2 text-center text-xs text-neutral-600">Weather · quit-fighter land next.</p>
     </main>
   )
 }
