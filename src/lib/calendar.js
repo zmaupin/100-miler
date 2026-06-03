@@ -89,3 +89,14 @@ export function daysSinceLastRun(activities, today = todayKey()) {
   if (runKeys.length === 0) return Infinity
   return diffDays(today, runKeys[runKeys.length - 1])
 }
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+// "Sat, Jun 6" from an activity or a key — built from parts, so no tz drift.
+export function formatShortDate(activityOrKey) {
+  const key = typeof activityOrKey === 'string' ? activityOrKey : localDateKey(activityOrKey)
+  if (!key) return ''
+  const [, mo, d] = key.split('-').map(Number)
+  return `${DOW[dowOfKey(key)]}, ${MONTHS[mo - 1]} ${d}`
+}

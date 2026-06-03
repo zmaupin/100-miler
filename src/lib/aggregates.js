@@ -17,6 +17,15 @@ export function totalTimeHours(activities) {
   return activities.reduce((s, a) => s + (a.moving_time || 0), 0) / 3600
 }
 
+// Longest single run (miles). Used by the next-race progress bar. Runs only.
+export function longestRunMiles(activities) {
+  let max = 0
+  for (const a of activities) {
+    if (isRunType(a)) max = Math.max(max, metersToMiles(a.distance))
+  }
+  return max
+}
+
 export function weeklyMileage(activities, weekStartK) {
   return activities
     .filter((a) => {

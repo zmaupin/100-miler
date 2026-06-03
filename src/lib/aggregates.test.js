@@ -7,6 +7,7 @@ import {
   zone2ComplianceRate,
   estimateDistanceFromTime,
   aerobicEfficiencySeries,
+  longestRunMiles,
 } from './aggregates.js'
 import { runOn, act } from './_fixtures.js'
 
@@ -64,5 +65,17 @@ describe('aerobic efficiency series', () => {
     expect(typeof series[0].pace).toBe('number')
     expect(series[1].pace).toBeNull()
     expect(typeof series[2].pace).toBe('number')
+  })
+})
+
+describe('longestRunMiles', () => {
+  it('is the longest run, ignoring walks/hikes', () => {
+    const acts = [
+      act({ type: 'Run', distance: 5000 }),
+      act({ type: 'TrailRun', distance: 12000 }), // longest run
+      act({ type: 'Walk', distance: 20000 }), // longer, but not a run
+    ]
+    expect(longestRunMiles(acts)).toBeCloseTo(7.456, 2)
+    expect(longestRunMiles([])).toBe(0)
   })
 })
