@@ -6,10 +6,10 @@ import { isMVD } from '../lib/activities.js'
 
 const KIND_LABEL = { zone2: 'Zone 2 run', long: 'Long run', strength: 'Strength', rest: 'Rest' }
 
-export function Today({ activities, today }) {
+export function Today({ activities, today, level }) {
   const phase = getPhase(today)
-  const level = getCurrentLevel()
-  const plan = getTodaysPlan(today, phase, level)
+  const lvl = level || getCurrentLevel()
+  const plan = getTodaysPlan(today, phase, lvl)
   const logged = activities.some((a) => localDateKey(a) === today && isMVD(a))
   const isRun = plan.type === 'run'
 
@@ -20,7 +20,7 @@ export function Today({ activities, today }) {
           <Label>Today</Label>
           <div className="mt-1 text-xl font-bold tracking-tight text-ink">{formatShortDate(today)}</div>
           <div className="mt-0.5 font-mono text-xs text-faint">
-            {phase.name} · L{level.id} {level.name}
+            {phase.name} · L{lvl.id} {lvl.name}
           </div>
         </div>
         {logged && (

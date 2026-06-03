@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { useStravaData } from '../lib/useStravaData.js'
 import { buildAuthorizeUrl } from '../lib/stravaAuth.js'
 import { todayKey } from '../lib/calendar.js'
+import { LEVELS } from '../lib/constants.js'
+import { getLevelId, setLevel } from '../lib/profile.js'
 import { Shell } from '../components/Shell.jsx'
 import { QuitFighter } from '../components/QuitFighter.jsx'
 import { Today } from '../components/Today.jsx'
@@ -9,6 +12,7 @@ import { NextRace } from '../components/NextRace.jsx'
 import { WeekStatus } from '../components/WeekStatus.jsx'
 import { LifetimeStats } from '../components/LifetimeStats.jsx'
 import { RecentActivities } from '../components/RecentActivities.jsx'
+import { LevelManager } from '../components/LevelManager.jsx'
 
 function Connect() {
   return (
@@ -62,20 +66,29 @@ function SyncStatus({ syncing, lastSyncAt, error, onSync }) {
 
 export default function Dashboard() {
   const { activities, lastSyncAt, syncing, error, runSync, connected } = useStravaData()
+  const [levelId, setLevelId] = useState(getLevelId)
   if (!connected) return <Connect />
 
   const today = todayKey()
+  const level = LEVELS.find((l) => l.id === levelId) || LEVELS[0]
 
   return (
     <Shell status={<SyncStatus syncing={syncing} lastSyncAt={lastSyncAt} error={error} onSync={runSync} />}>
       <div className="space-y-4">
         <QuitFighter activities={activities} today={today} />
-        <Today activities={activities} today={today} />
+        <Today activities={activities} today={today} level={level} />
         <Weather />
         <NextRace activities={activities} today={today} />
         <WeekStatus activities={activities} today={today} />
         <LifetimeStats activities={activities} />
         <RecentActivities activities={activities} />
+        <LevelManager
+          levelId={levelId}
+          onChangeLevel={(id) => {
+            setLevel(id)
+            setLevelId(id)
+          }}
+        />
       </div>
     </Shell>
   )
