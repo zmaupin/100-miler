@@ -4,6 +4,7 @@ import { buildAuthorizeUrl } from '../lib/stravaAuth.js'
 import { todayKey } from '../lib/calendar.js'
 import { QuitFighter } from '../components/QuitFighter.jsx'
 import { Today } from '../components/Today.jsx'
+import { Weather } from '../components/Weather.jsx'
 import { NextRace } from '../components/NextRace.jsx'
 import { StreakCard } from '../components/StreakCard.jsx'
 import { LifetimeStats } from '../components/LifetimeStats.jsx'
@@ -74,6 +75,7 @@ export default function Dashboard() {
 
       <QuitFighter activities={activities} today={today} />
       <Today activities={activities} today={today} />
+      <Weather />
       <NextRace activities={activities} today={today} />
       <StreakCard activities={activities} today={today} />
       <LifetimeStats activities={activities} />
