@@ -3,6 +3,10 @@
   publish = "dist"
   functions = "netlify/functions"
 
+# Pin the build toolchain (Vite 5 needs Node 18+; older Netlify defaults break it).
+[build.environment]
+  NODE_VERSION = "20"
+
 # /api/strava/callback -> netlify/functions/strava-callback, etc.
 [[redirects]]
   from = "/api/strava/*"
