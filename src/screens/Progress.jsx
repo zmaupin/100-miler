@@ -2,7 +2,6 @@ import { storage } from '../lib/storage.js'
 import { isConnected } from '../lib/stravaAuth.js'
 import { todayKey } from '../lib/calendar.js'
 import { Shell } from '../components/Shell.jsx'
-import { Label } from '../components/ui.jsx'
 import { AerobicEfficiency } from '../components/charts/AerobicEfficiency.jsx'
 import { Cumulative } from '../components/charts/Cumulative.jsx'
 import { WeeklyVolume } from '../components/charts/WeeklyVolume.jsx'
@@ -25,7 +24,10 @@ export default function Progress() {
 
   return (
     <Shell>
-      <Label className="mb-3">Progress</Label>
+      <div className="mb-4">
+        <h1 className="text-xl font-bold tracking-tight text-ink">Progress</h1>
+        <p className="mt-0.5 text-sm text-faint">Proof the work is working.</p>
+      </div>
       <div className="space-y-4">
         <AerobicEfficiency activities={activities} />
         <Cumulative activities={activities} />

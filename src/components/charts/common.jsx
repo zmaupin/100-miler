@@ -24,6 +24,12 @@ export const TOOLTIP = {
   cursor: { fill: 'color-mix(in oklch, var(--ink) 6%, transparent)' },
 }
 
+// Chart entrance animation, off when the user prefers reduced motion.
+export const CHART_ANIM =
+  typeof window !== 'undefined'
+    ? !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    : false
+
 // "2026-06-01" -> "6/1"
 export function shortAxisDate(key) {
   if (!key || typeof key !== 'string') return key
@@ -31,20 +37,40 @@ export function shortAxisDate(key) {
   return `${Number(mo)}/${Number(d)}`
 }
 
-export function ChartCard({ title, caption, height = 200, empty, children }) {
+// Card chrome: title (left) + an optional headline readout (right), then the chart
+// body, then a caption. The readout makes each chart a scannable HUD tile.
+export function ChartCard({ title, value, unit, caption, empty, children }) {
   return (
     <Panel>
-      <Label>{title}</Label>
+      <div className="flex items-baseline justify-between gap-3">
+        <Label>{title}</Label>
+        {value != null && (
+          <span className="flex items-baseline gap-1">
+            <span className="text-xl font-bold leading-none tnum text-ink">{value}</span>
+            {unit && <span className="font-mono text-[0.625rem] text-faint">{unit}</span>}
+          </span>
+        )}
+      </div>
       {empty ? (
         <p className="py-8 text-center text-sm text-faint">{empty}</p>
       ) : (
         <>
-          <div className="mt-3" style={{ width: '100%', height }}>
-            <ResponsiveContainer>{children}</ResponsiveContainer>
-          </div>
+          {children}
           {caption && <p className="mt-2.5 text-xs leading-relaxed text-faint">{caption}</p>}
         </>
       )}
     </Panel>
+  )
+}
+
+// A sized, responsive chart area with an optional sub-label (for multi-chart cards).
+export function ChartBlock({ height = 200, label, children }) {
+  return (
+    <div className="mt-3">
+      {label && <div className="label mb-1 text-faint">{label}</div>}
+      <div style={{ width: '100%', height }}>
+        <ResponsiveContainer>{children}</ResponsiveContainer>
+      </div>
+    </div>
   )
 }

@@ -23,6 +23,10 @@
   --warn: oklch(0.84 0.15 90);
   --bad: oklch(0.64 0.21 25);
 
+  /* Phase colors for weekly-volume bars (phase 1 reuses the accent). */
+  --phase-2: oklch(0.7 0.13 235);
+  --phase-3: oklch(0.7 0.13 300);
+
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
