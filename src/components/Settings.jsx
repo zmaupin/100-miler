@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Label } from './ui.jsx'
 import { getSettings, setSettings } from '../lib/profile.js'
 import { isConnected, disconnect, buildAuthorizeUrl } from '../lib/stravaAuth.js'
 import { syncActivities } from '../lib/stravaSync.js'
 import { storage } from '../lib/storage.js'
+
+const HR_MIN = 120
+const HR_MAX = 220
 
 // Settings live in a bottom-sheet modal (not a route). Changes that ripple through
 // computed views (zones, weekday target, start date) persist then reload — cheap and
@@ -15,17 +18,31 @@ export function Settings({ onClose }) {
   const [weekdayRunTarget, setTarget] = useState(initial.weekdayRunTarget)
   const [busy, setBusy] = useState(false)
 
-  const hr = Number(maxHR) || 0
-  const z2min = Math.round(hr * 0.6)
-  const z2max = Math.round(hr * 0.8)
+  // Dismiss on Escape; lock background scroll while open.
+  useEffect(() => {
+    const onKey = (e) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [onClose])
+
+  const hrNum = Number(maxHR)
+  const hrValid = Number.isFinite(hrNum) && hrNum >= HR_MIN && hrNum <= HR_MAX
+  const z2min = hrValid ? Math.round(hrNum * 0.6) : '—'
+  const z2max = hrValid ? Math.round(hrNum * 0.8) : '—'
   const lastSyncAt = storage.get('lastSyncAt')
 
   function save() {
+    if (!hrValid) return
     setSettings({
-      maxHR: hr,
-      zone2Min: z2min,
-      zone2Max: z2max,
-      zone2Override: hr !== getSettings().maxHR,
+      maxHR: hrNum,
+      zone2Min: Math.round(hrNum * 0.6),
+      zone2Max: Math.round(hrNum * 0.8),
+      zone2Override: hrNum !== initial.maxHR,
       trainingStartDate,
       weekdayRunTarget: Number(weekdayRunTarget),
     })
@@ -53,6 +70,9 @@ export function Settings({ onClose }) {
       onClick={onClose}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Settings"
         className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-2xl border border-line bg-surface p-5 sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
@@ -103,15 +123,24 @@ export function Settings({ onClose }) {
             <input
               type="number"
               inputMode="numeric"
+              min={HR_MIN}
+              max={HR_MAX}
               value={maxHR}
+              aria-invalid={!hrValid}
               onChange={(e) => setMaxHR(e.target.value)}
-              className="w-24 rounded-lg border border-line bg-surface-2 px-3 py-2 tnum text-ink focus:border-accent focus:outline-none"
+              className={`w-24 rounded-lg border bg-surface-2 px-3 py-2 tnum text-ink focus:outline-none ${
+                hrValid ? 'border-line focus:border-accent' : 'border-bad focus:border-bad'
+              }`}
             />
             <span className="text-sm text-muted">
               Zone 2 = <span className="tnum text-ink">{z2min}–{z2max}</span> bpm
             </span>
           </div>
-          <p className="mt-2 text-xs text-faint">Update after a field test once you have a watch.</p>
+          <p className={`mt-2 text-xs ${hrValid ? 'text-faint' : 'text-bad'}`}>
+            {hrValid
+              ? 'Update after a field test once you have a watch.'
+              : `Enter a value between ${HR_MIN} and ${HR_MAX}.`}
+          </p>
         </section>
 
         <section className="mt-6">
@@ -152,7 +181,8 @@ export function Settings({ onClose }) {
         <button
           type="button"
           onClick={save}
-          className="mt-7 w-full rounded-lg bg-accent py-3 font-bold text-white transition-transform duration-150 ease-out active:scale-[0.98]"
+          disabled={!hrValid}
+          className="mt-7 w-full rounded-lg bg-accent py-3 font-bold text-white transition-transform duration-150 ease-out active:scale-[0.98] disabled:opacity-50"
         >
           Save
         </button>

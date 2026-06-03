@@ -9,3 +9,6 @@ coverage
 
 # Vendored third-party skill (install via plugin marketplace; not app code)
 .claude/skills/impeccable/
+
+# impeccable working dir (critique snapshots, live config) — local tool state
+.impeccable/

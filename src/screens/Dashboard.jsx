@@ -45,7 +45,7 @@ function Connect() {
 function SyncStatus({ syncing, lastSyncAt, error, onSync }) {
   const dot = error ? 'bg-bad' : syncing ? 'bg-warn' : 'bg-good'
   const text = error
-    ? 'Sync failed'
+    ? 'Sync failed · retry'
     : syncing
       ? 'Syncing'
       : lastSyncAt
@@ -56,11 +56,26 @@ function SyncStatus({ syncing, lastSyncAt, error, onSync }) {
       type="button"
       onClick={onSync}
       disabled={syncing}
-      className="flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-wide text-faint transition-colors hover:text-muted disabled:opacity-60"
+      aria-live="polite"
+      title={error ? 'Sync failed — tap to retry, or Reconnect in Settings' : 'Sync now'}
+      className={`flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-wide transition-colors disabled:opacity-60 ${
+        error ? 'text-bad' : 'text-faint hover:text-muted'
+      }`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${dot} ${syncing ? 'animate-pulse' : ''}`} />
       {text}
     </button>
+  )
+}
+
+// First-load placeholder so zeros don't flash before the first sync lands.
+function Skeleton() {
+  return (
+    <div className="space-y-4" aria-hidden="true">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="h-28 animate-pulse rounded-xl border border-line bg-surface" />
+      ))}
+    </div>
   )
 }
 
@@ -74,6 +89,9 @@ export default function Dashboard() {
 
   return (
     <Shell status={<SyncStatus syncing={syncing} lastSyncAt={lastSyncAt} error={error} onSync={runSync} />}>
+      {activities.length === 0 && syncing ? (
+        <Skeleton />
+      ) : (
       <div className="space-y-4">
         <QuitFighter activities={activities} today={today} />
         <Today activities={activities} today={today} level={level} />
@@ -90,6 +108,7 @@ export default function Dashboard() {
           }}
         />
       </div>
+      )}
     </Shell>
   )
 }
