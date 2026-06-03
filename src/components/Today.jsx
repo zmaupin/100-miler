@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Panel, Label } from './ui.jsx'
 import { getPhase, getTodaysPlan } from '../lib/plan.js'
 import { formatShortDate, localDateKey } from '../lib/calendar.js'
@@ -33,6 +34,14 @@ export function Today({ activities, today, level }) {
       <div className="mt-3 rounded-lg bg-surface-2 px-3 py-2.5">
         <div className={`label ${isRun ? 'text-accent' : 'text-faint'}`}>{KIND_LABEL[plan.kind] || 'Plan'}</div>
         <div className={`mt-0.5 font-semibold ${isRun ? 'text-ink' : 'text-muted'}`}>{plan.label}</div>
+        {plan.type === 'strength' && (
+          <Link
+            to="/strength"
+            className="mt-1.5 inline-block font-mono text-[0.625rem] uppercase tracking-wide text-accent"
+          >
+            Log strength →
+          </Link>
+        )}
       </div>
 
       <p className="mt-2.5 text-xs text-faint">Bad day? One mile counts.</p>
