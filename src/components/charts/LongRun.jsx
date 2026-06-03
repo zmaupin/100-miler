@@ -14,9 +14,9 @@ function LongRunDot(props) {
   const { cx, cy, payload } = props
   if (cx == null || cy == null || payload?.miles == null) return null
   return payload.estimated ? (
-    <circle cx={cx} cy={cy} r={3} fill="#0a0a0a" stroke="#fb923c" strokeWidth={1.5} />
+    <circle cx={cx} cy={cy} r={3} fill="#0a0a0a" stroke="var(--accent)" strokeWidth={1.5} />
   ) : (
-    <circle cx={cx} cy={cy} r={3} fill="#fb923c" />
+    <circle cx={cx} cy={cy} r={3} fill="var(--accent)" />
   )
 }
 
@@ -54,7 +54,7 @@ export function LongRun({ activities, today }) {
         <Line
           type="monotone"
           dataKey="miles"
-          stroke="#fb923c"
+          stroke="var(--accent)"
           strokeWidth={2}
           connectNulls
           dot={<LongRunDot />}

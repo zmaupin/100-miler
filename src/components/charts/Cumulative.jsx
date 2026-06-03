@@ -34,7 +34,7 @@ export function Cumulative({ activities }) {
               label={{ value: `${m}`, position: 'insideTopLeft', fill: '#71717a', fontSize: 10 }}
             />
           ))}
-          <Line type="monotone" dataKey="miles" stroke="#fb923c" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="miles" stroke="var(--accent)" strokeWidth={2} dot={false} />
         </LineChart>
       </ChartCard>
 
@@ -48,7 +48,7 @@ export function Cumulative({ activities }) {
             labelFormatter={shortAxisDate}
             formatter={(v) => `${Math.round(v).toLocaleString()} ft`}
           />
-          <Line type="monotone" dataKey="elevFt" stroke="#10b981" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="elevFt" stroke="var(--good)" strokeWidth={2} dot={false} />
         </LineChart>
       </ChartCard>
     </>

@@ -28,7 +28,7 @@ export function Zone2Compliance({ activities, today }) {
         <ReferenceLine y={80} stroke="#52525b" strokeDasharray="4 4" />
         <Bar dataKey="pct" radius={[2, 2, 0, 0]}>
           {data.map((d, i) => (
-            <Cell key={i} fill={d.pct == null ? 'transparent' : d.pct >= 80 ? '#10b981' : '#ef4444'} />
+            <Cell key={i} fill={d.pct == null ? 'transparent' : d.pct >= 80 ? 'var(--good)' : 'var(--bad)'} />
           ))}
         </Bar>
       </BarChart>

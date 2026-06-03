@@ -1,26 +1,27 @@
 import { ResponsiveContainer } from 'recharts'
-import { Card } from '../ui.jsx'
+import { Panel, Label } from '../ui.jsx'
 
-// Shared dark-theme chart styling.
+// Shared dark-theme chart styling, driven by the design tokens. De-cluttered:
+// horizontal gridlines only, hairline lines, mono ticks.
 export const AXIS = {
-  stroke: '#525252',
-  tick: { fontSize: 11, fill: '#737373' },
+  stroke: 'var(--faint)',
+  tick: { fontSize: 10, fill: 'var(--faint)', fontFamily: 'JetBrains Mono Variable, monospace' },
   tickLine: false,
-  axisLine: { stroke: '#262626' },
+  axisLine: { stroke: 'var(--line)' },
 }
 
-export const GRID = { stroke: '#1f1f1f', strokeDasharray: '3 3', vertical: false }
+export const GRID = { stroke: 'var(--line)', strokeDasharray: '2 4', vertical: false }
 
 export const TOOLTIP = {
   contentStyle: {
-    background: '#0a0a0a',
-    border: '1px solid #404040',
-    borderRadius: 8,
+    background: 'var(--surface)',
+    border: '1px solid var(--line)',
+    borderRadius: 10,
     fontSize: 12,
-    color: '#e5e5e5',
+    color: 'var(--ink)',
   },
-  labelStyle: { color: '#a3a3a3' },
-  cursor: { fill: '#ffffff10' },
+  labelStyle: { color: 'var(--faint)', fontFamily: 'JetBrains Mono Variable, monospace', fontSize: 11 },
+  cursor: { fill: 'color-mix(in oklch, var(--ink) 6%, transparent)' },
 }
 
 // "2026-06-01" -> "6/1"
@@ -32,17 +33,18 @@ export function shortAxisDate(key) {
 
 export function ChartCard({ title, caption, height = 200, empty, children }) {
   return (
-    <Card title={title}>
+    <Panel>
+      <Label>{title}</Label>
       {empty ? (
-        <p className="py-8 text-center text-sm text-neutral-500">{empty}</p>
+        <p className="py-8 text-center text-sm text-faint">{empty}</p>
       ) : (
         <>
-          <div style={{ width: '100%', height }}>
+          <div className="mt-3" style={{ width: '100%', height }}>
             <ResponsiveContainer>{children}</ResponsiveContainer>
           </div>
-          {caption && <p className="mt-2 text-xs leading-relaxed text-neutral-500">{caption}</p>}
+          {caption && <p className="mt-2.5 text-xs leading-relaxed text-faint">{caption}</p>}
         </>
       )}
-    </Card>
+    </Panel>
   )
 }

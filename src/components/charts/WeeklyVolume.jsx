@@ -2,7 +2,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip } from 'recha
 import { ChartCard, AXIS, GRID, TOOLTIP, shortAxisDate } from './common.jsx'
 import { weeklyVolumeSeries } from '../../lib/charts.js'
 
-const PHASE_COLOR = { 1: '#fb923c', 2: '#38bdf8', 3: '#a78bfa', maintenance: '#737373' }
+const PHASE_COLOR = { 1: 'var(--accent)', 2: '#38bdf8', 3: '#a78bfa', maintenance: '#737373' }
 
 export function WeeklyVolume({ activities, today }) {
   const data = weeklyVolumeSeries(activities, today, 16)
@@ -25,7 +25,7 @@ export function WeeklyVolume({ activities, today }) {
           />
           <Bar dataKey="miles" radius={[2, 2, 0, 0]}>
             {data.map((d, i) => (
-              <Cell key={i} fill={PHASE_COLOR[d.phaseId] || '#fb923c'} />
+              <Cell key={i} fill={PHASE_COLOR[d.phaseId] || 'var(--accent)'} />
             ))}
           </Bar>
         </BarChart>
@@ -41,7 +41,7 @@ export function WeeklyVolume({ activities, today }) {
             labelFormatter={shortAxisDate}
             formatter={(v) => `${Math.round(v).toLocaleString()} ft`}
           />
-          <Bar dataKey="elevFt" fill="#10b981" radius={[2, 2, 0, 0]} />
+          <Bar dataKey="elevFt" fill="var(--good)" radius={[2, 2, 0, 0]} />
         </BarChart>
       </ChartCard>
     </>

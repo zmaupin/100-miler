@@ -26,16 +26,22 @@ export default function AuthCallback() {
   }, [params, navigate])
 
   return (
-    <main className="mx-auto max-w-md p-6">
+    <main className="mx-auto flex min-h-full max-w-md flex-col justify-center px-6">
       {error ? (
         <>
-          <p className="text-red-400">Couldn’t connect: {error}</p>
-          <Link to="/" className="mt-4 inline-block text-sm text-neutral-400 underline">
+          <p className="text-bad">Couldn’t connect: {error}</p>
+          <Link
+            to="/"
+            className="mt-4 inline-block font-mono text-xs uppercase tracking-wide text-faint underline"
+          >
             Back
           </Link>
         </>
       ) : (
-        <p className="text-neutral-400">Connecting to Strava…</p>
+        <p className="flex items-center gap-2 text-muted">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+          Connecting to Strava…
+        </p>
       )}
     </main>
   )

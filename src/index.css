@@ -2,8 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens (see DESIGN.md) — performance HUD, near-black + Strava orange ── */
 :root {
   color-scheme: dark;
+
+  --bg: oklch(0.145 0.004 264);
+  --surface: oklch(0.196 0.005 264);
+  --surface-2: oklch(0.238 0.006 264);
+  --line: oklch(0.305 0.006 264);
+
+  --ink: oklch(0.985 0 0);
+  --muted: oklch(0.76 0.012 264);
+  --faint: oklch(0.62 0.013 264);
+
+  --accent: oklch(0.696 0.196 41);
+  --accent-bright: oklch(0.75 0.2 45);
+  --accent-weak: oklch(0.3 0.09 41);
+
+  --good: oklch(0.78 0.16 152);
+  --warn: oklch(0.84 0.15 90);
+  --bad: oklch(0.64 0.21 25);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html,
@@ -14,8 +34,85 @@ body,
 
 body {
   margin: 0;
-  background-color: #0a0a0a;
-  color: #e5e5e5;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter Variable', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  text-rendering: optimizeLegibility;
+  /* Respect the iOS safe areas around the fixed tab bar. */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Keyboard focus only — never a focus ring on mouse taps. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Slim dark scrollbar so it reads as instrument chrome, not OS default. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Small instrument label: mono, uppercase, wide tracking. */
+  /* Typographic only — pair with a text-* color (default text-faint via <Label>). */
+  .label {
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.6875rem;
+  }
+}
+
+/* ── Motion ── */
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes attention {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--accent) 0%, transparent);
+  }
+}
+.animate-enter {
+  animation: enter 0.22s var(--ease) both;
+}
+.animate-attention {
+  animation: attention 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

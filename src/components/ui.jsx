@@ -1,35 +1,57 @@
-// Shared dashboard primitives. Dark, high-contrast, data-forward.
+// Shared HUD primitives. Numbers are the interface: big, tabular, high-contrast.
 
-export function Card({ title, children }) {
+export function Panel({ children, className = '', as: Tag = 'section' }) {
+  return <Tag className={`rounded-xl border border-line bg-surface p-4 ${className}`}>{children}</Tag>
+}
+
+export function Label({ children, className = '' }) {
+  return <div className={`label text-faint ${className}`}>{children}</div>
+}
+
+// Oversized metric: tabular number + small mono unit + mono label.
+export function Metric({ value, unit, label, tone = 'ink', size = 'stat' }) {
   return (
-    <section className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
-      {title && (
-        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-neutral-500">
-          {title}
-        </h2>
-      )}
-      <div className={title ? 'mt-2' : ''}>{children}</div>
-    </section>
+    <div>
+      <div
+        className={`flex items-baseline gap-1 font-extrabold tnum leading-none ${
+          tone === 'accent' ? 'text-accent' : 'text-ink'
+        }`}
+      >
+        <span className={size === 'hero' ? 'text-hero' : 'text-stat'}>{value}</span>
+        {unit && <span className="font-mono text-sm font-medium text-faint">{unit}</span>}
+      </div>
+      {label && <div className="label mt-1.5 text-faint">{label}</div>}
+    </div>
   )
 }
 
-const DOT = {
-  in: 'bg-green-500',
-  border: 'bg-yellow-500',
-  over: 'bg-red-500',
-  'no-data': 'bg-neutral-600',
+const ZONE = {
+  in: { dot: 'bg-good', text: 'text-good', label: 'IN' },
+  border: { dot: 'bg-warn', text: 'text-warn', label: 'EASY' },
+  over: { dot: 'bg-bad', text: 'text-bad', label: 'OVER' },
+  'no-data': { dot: 'bg-faint', text: 'text-faint', label: '—' },
 }
 
-// Zone 2 compliance dot: green in-zone / yellow under (too easy) / red over / gray no-data.
-export function Zone2Dot({ state }) {
-  return <span className={`inline-block h-2.5 w-2.5 rounded-full ${DOT[state] || DOT['no-data']}`} />
-}
-
-export function Stat({ label, value }) {
+// Zone 2 status carries a label, not color alone.
+export function Zone2({ state, showText = true }) {
+  const z = ZONE[state] || ZONE['no-data']
   return (
-    <div>
-      <div className="text-3xl font-bold tabular-nums tracking-tight text-neutral-100">{value}</div>
-      <div className="mt-0.5 text-xs uppercase tracking-wide text-neutral-500">{label}</div>
+    <span className="inline-flex items-center gap-1.5">
+      <span className={`inline-block h-2 w-2 rounded-full ${z.dot}`} />
+      {showText && (
+        <span className={`font-mono text-[0.625rem] font-medium tracking-wide ${z.text}`}>
+          {z.label}
+        </span>
+      )}
+    </span>
+  )
+}
+
+export function ProgressBar({ pct, className = '' }) {
+  const w = Math.max(0, Math.min(100, pct))
+  return (
+    <div className={`h-1.5 overflow-hidden rounded-full bg-surface-2 ${className}`}>
+      <div className="h-full rounded-full bg-accent transition-[width] duration-500 ease-out" style={{ width: `${w}%` }} />
     </div>
   )
 }

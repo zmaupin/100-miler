@@ -39,9 +39,9 @@ export function AerobicEfficiency({ activities }) {
           type="monotone"
           dataKey="pace"
           name="Pace"
-          stroke="#fb923c"
+          stroke="var(--accent)"
           strokeWidth={2}
-          dot={{ r: 2, fill: '#fb923c' }}
+          dot={{ r: 2, fill: 'var(--accent)' }}
           connectNulls={false}
         />
         <Line

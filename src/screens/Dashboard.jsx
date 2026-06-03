@@ -1,21 +1,28 @@
-import { Link } from 'react-router-dom'
 import { useStravaData } from '../lib/useStravaData.js'
 import { buildAuthorizeUrl } from '../lib/stravaAuth.js'
 import { todayKey } from '../lib/calendar.js'
+import { Shell } from '../components/Shell.jsx'
 import { QuitFighter } from '../components/QuitFighter.jsx'
 import { Today } from '../components/Today.jsx'
 import { Weather } from '../components/Weather.jsx'
 import { NextRace } from '../components/NextRace.jsx'
-import { StreakCard } from '../components/StreakCard.jsx'
+import { WeekStatus } from '../components/WeekStatus.jsx'
 import { LifetimeStats } from '../components/LifetimeStats.jsx'
-import { ThisWeek } from '../components/ThisWeek.jsx'
 import { RecentActivities } from '../components/RecentActivities.jsx'
 
 function Connect() {
   return (
-    <main className="mx-auto max-w-md p-6">
-      <h1 className="text-2xl font-bold tracking-tight">100 Mile Project</h1>
-      <p className="mt-3 text-neutral-400">
+    <div className="mx-auto flex min-h-full max-w-md flex-col justify-center px-6 py-16">
+      <span className="flex items-center gap-2">
+        <span className="h-3 w-3 rounded-[3px] bg-accent" />
+        <span className="font-mono text-xs uppercase tracking-[0.18em] text-muted">100 Mile Project</span>
+      </span>
+      <h1 className="mt-6 text-3xl font-extrabold leading-tight tracking-tight text-ink">
+        Build the base.
+        <br />
+        Don’t break the chain.
+      </h1>
+      <p className="mt-3 text-muted">
         Connect Strava to begin. The app never asks you to log a run by hand.
       </p>
       <button
@@ -23,34 +30,33 @@ function Connect() {
         onClick={() => {
           window.location.href = buildAuthorizeUrl()
         }}
-        className="mt-6 rounded-lg bg-orange-600 px-4 py-3 font-semibold text-white active:bg-orange-700"
+        className="mt-8 rounded-lg bg-accent py-3.5 font-bold text-white transition-transform duration-150 ease-out active:scale-[0.98]"
       >
         Connect Strava
       </button>
-    </main>
+    </div>
   )
 }
 
-function SyncBar({ syncing, lastSyncAt, error, onSync }) {
+function SyncStatus({ syncing, lastSyncAt, error, onSync }) {
+  const dot = error ? 'bg-bad' : syncing ? 'bg-warn' : 'bg-good'
+  const text = error
+    ? 'Sync failed'
+    : syncing
+      ? 'Syncing'
+      : lastSyncAt
+        ? new Date(lastSyncAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+        : 'Sync'
   return (
-    <div className="flex items-center justify-between text-xs text-neutral-500">
-      <span>
-        {syncing
-          ? 'Syncing…'
-          : lastSyncAt
-            ? `Synced ${new Date(lastSyncAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`
-            : 'Not synced yet'}
-        {error && <span className="ml-2 text-red-400">· {error}</span>}
-      </span>
-      <button
-        type="button"
-        onClick={onSync}
-        disabled={syncing}
-        className="rounded border border-neutral-700 px-2 py-1 disabled:opacity-50"
-      >
-        Sync
-      </button>
-    </div>
+    <button
+      type="button"
+      onClick={onSync}
+      disabled={syncing}
+      className="flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-wide text-faint transition-colors hover:text-muted disabled:opacity-60"
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${dot} ${syncing ? 'animate-pulse' : ''}`} />
+      {text}
+    </button>
   )
 }
 
@@ -60,27 +66,17 @@ export default function Dashboard() {
 
   const today = todayKey()
 
-  // Section order follows the spec. Quit-fighter (top) and weather (after Today)
-  // slot in at their build steps.
   return (
-    <main className="mx-auto max-w-md space-y-4 p-4 pb-20">
-      <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold tracking-tight">100 Mile Project</h1>
-        <Link to="/progress" className="text-sm text-neutral-400 underline">
-          Progress
-        </Link>
-      </header>
-
-      <SyncBar syncing={syncing} lastSyncAt={lastSyncAt} error={error} onSync={runSync} />
-
-      <QuitFighter activities={activities} today={today} />
-      <Today activities={activities} today={today} />
-      <Weather />
-      <NextRace activities={activities} today={today} />
-      <StreakCard activities={activities} today={today} />
-      <LifetimeStats activities={activities} />
-      <ThisWeek activities={activities} today={today} />
-      <RecentActivities activities={activities} />
-    </main>
+    <Shell status={<SyncStatus syncing={syncing} lastSyncAt={lastSyncAt} error={error} onSync={runSync} />}>
+      <div className="space-y-4">
+        <QuitFighter activities={activities} today={today} />
+        <Today activities={activities} today={today} />
+        <Weather />
+        <NextRace activities={activities} today={today} />
+        <WeekStatus activities={activities} today={today} />
+        <LifetimeStats activities={activities} />
+        <RecentActivities activities={activities} />
+      </div>
+    </Shell>
   )
 }

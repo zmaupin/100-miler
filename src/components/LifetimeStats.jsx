@@ -1,19 +1,20 @@
-import { Card, Stat } from './ui.jsx'
+import { Panel, Label, Metric } from './ui.jsx'
 import { totalMiles, totalElevationFeet, totalTimeHours } from '../lib/aggregates.js'
 
 const n0 = (x) => Math.round(x).toLocaleString()
 const n1 = (x) => x.toLocaleString(undefined, { maximumFractionDigits: 1 })
 
-// The numbers that grow.
+// The numbers that grow — data as the hero.
 export function LifetimeStats({ activities }) {
   return (
-    <Card title="Since June 1">
-      <div className="grid grid-cols-2 gap-4">
-        <Stat label="Miles" value={n1(totalMiles(activities))} />
-        <Stat label="Elevation ft" value={n0(totalElevationFeet(activities))} />
-        <Stat label="Hours on feet" value={n1(totalTimeHours(activities))} />
-        <Stat label="Activities" value={activities.length.toLocaleString()} />
+    <Panel>
+      <Label>Since June 1</Label>
+      <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-6">
+        <Metric value={n1(totalMiles(activities))} unit="mi" label="Distance" />
+        <Metric value={n0(totalElevationFeet(activities))} unit="ft" label="Climbed" />
+        <Metric value={n1(totalTimeHours(activities))} unit="hr" label="On feet" />
+        <Metric value={activities.length.toLocaleString()} label="Activities" />
       </div>
-    </Card>
+    </Panel>
   )
 }
