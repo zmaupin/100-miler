@@ -31,12 +31,13 @@ apps. OAuth scope used: `activity:read_all`.
 
 ## Environment variables
 
-Only two, both **server-side only** (the Client Secret never reaches the browser):
+All **server-side only** (the Client Secret never reaches the browser):
 
-| Variable               | Where                          | Value                     |
-| ---------------------- | ------------------------------ | ------------------------- |
-| `STRAVA_CLIENT_ID`     | `.env` (local) / Netlify env   | `254626`                  |
-| `STRAVA_CLIENT_SECRET` | `.env` (local) / Netlify env   | from the Strava app page  |
+| Variable                    | Where                        | Value                                            |
+| --------------------------- | ---------------------------- | ------------------------------------------------ |
+| `STRAVA_CLIENT_ID`          | `.env` (local) / Netlify env | `254626`                                         |
+| `STRAVA_CLIENT_SECRET`      | `.env` (local) / Netlify env | from the Strava app page                         |
+| `STRAVA_ALLOWED_ATHLETE_ID` | Netlify env (optional)       | your Strava athlete ID; locks connect to you only |
 
 The OAuth redirect URI is derived from `window.location.origin` at runtime
 (`<origin>/auth/callback`), so the same build works on localhost and in production —

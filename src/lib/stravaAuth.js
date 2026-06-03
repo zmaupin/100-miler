@@ -42,7 +42,10 @@ export async function exchangeCode(code, returnedState) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ code }),
   })
-  if (!res.ok) throw new Error('exchange_failed')
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || 'exchange_failed')
+  }
   const tok = await res.json()
   saveTokens(tok)
   if (tok.athlete) storage.set('athlete', tok.athlete)

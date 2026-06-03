@@ -28,6 +28,13 @@ export const handler = async (event) => {
     const data = await res.json()
     if (!res.ok) return json(res.status, { error: 'strava_exchange_failed', detail: data })
 
+    // Single-user lock: when STRAVA_ALLOWED_ATHLETE_ID is set, only that athlete may
+    // connect. Unset = open (so a missing env var never locks you out by accident).
+    const allowed = process.env.STRAVA_ALLOWED_ATHLETE_ID
+    if (allowed && String(data.athlete?.id) !== String(allowed)) {
+      return json(403, { error: 'not_authorized' })
+    }
+
     return json(200, {
       access_token: data.access_token,
       refresh_token: data.refresh_token,

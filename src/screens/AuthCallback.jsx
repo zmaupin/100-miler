@@ -3,6 +3,11 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { exchangeCode } from '../lib/stravaAuth.js'
 
 // Strava redirects here with ?code & ?state. Exchange, then land on the dashboard.
+const MESSAGES = {
+  not_authorized: 'This app is locked to its owner’s Strava account.',
+  oauth_state_mismatch: 'Security check failed. Please try connecting again.',
+}
+
 export default function AuthCallback() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
@@ -29,7 +34,7 @@ export default function AuthCallback() {
     <main className="mx-auto flex min-h-full max-w-md flex-col justify-center px-6">
       {error ? (
         <>
-          <p className="text-bad">Couldn’t connect: {error}</p>
+          <p className="text-bad">{MESSAGES[error] || `Couldn’t connect: ${error}`}</p>
           <Link
             to="/"
             className="mt-4 inline-block font-mono text-xs uppercase tracking-wide text-faint underline"
