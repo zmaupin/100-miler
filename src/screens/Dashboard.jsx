@@ -2,8 +2,11 @@ import { Link } from 'react-router-dom'
 import { useStravaData } from '../lib/useStravaData.js'
 import { buildAuthorizeUrl } from '../lib/stravaAuth.js'
 import { todayKey } from '../lib/calendar.js'
+import { Today } from '../components/Today.jsx'
 import { NextRace } from '../components/NextRace.jsx'
+import { StreakCard } from '../components/StreakCard.jsx'
 import { LifetimeStats } from '../components/LifetimeStats.jsx'
+import { ThisWeek } from '../components/ThisWeek.jsx'
 import { RecentActivities } from '../components/RecentActivities.jsx'
 
 function Connect() {
@@ -55,6 +58,8 @@ export default function Dashboard() {
 
   const today = todayKey()
 
+  // Section order follows the spec. Quit-fighter (top) and weather (after Today)
+  // slot in at their build steps.
   return (
     <main className="mx-auto max-w-md space-y-4 p-4 pb-20">
       <header className="flex items-center justify-between">
@@ -66,13 +71,14 @@ export default function Dashboard() {
 
       <SyncBar syncing={syncing} lastSyncAt={lastSyncAt} error={error} onSync={runSync} />
 
+      <Today activities={activities} today={today} />
       <NextRace activities={activities} today={today} />
+      <StreakCard activities={activities} today={today} />
       <LifetimeStats activities={activities} />
+      <ThisWeek activities={activities} today={today} />
       <RecentActivities activities={activities} />
 
-      <p className="pt-2 text-center text-xs text-neutral-600">
-        Today · streak · this-week · weather · quit-fighter land next.
-      </p>
+      <p className="pt-2 text-center text-xs text-neutral-600">Weather · quit-fighter land next.</p>
     </main>
   )
 }
