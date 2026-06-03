@@ -1,11 +1,12 @@
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts'
 import { ChartCard, AXIS, GRID, TOOLTIP, shortAxisDate } from './common.jsx'
 import { zone2ComplianceSeries } from '../../lib/charts.js'
-import { ATHLETE } from '../../lib/constants.js'
+import { getZones } from '../../lib/profile.js'
 
 // Are you actually training easy? Green >= 80% goal, red below.
 export function Zone2Compliance({ activities, today }) {
-  const data = zone2ComplianceSeries(activities, ATHLETE.zone2Min, ATHLETE.zone2Max, today, 16)
+  const { min, max } = getZones()
+  const data = zone2ComplianceSeries(activities, min, max, today, 16)
   if (!data.some((d) => d.pct != null)) {
     return <ChartCard title="Zone 2 Compliance" empty="Needs runs with heart-rate data." />
   }

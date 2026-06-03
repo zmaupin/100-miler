@@ -4,9 +4,10 @@ import { formatShortDate } from '../lib/calendar.js'
 import { metersToMiles, metersToFeet, mpsToMinPerMile, secondsToClock } from '../lib/conversions.js'
 import { zone2Compliance } from '../lib/hr.js'
 import { getNote, setNote } from '../lib/notes.js'
-import { ATHLETE } from '../lib/constants.js'
+import { getZones } from '../lib/profile.js'
 
 export function RecentActivities({ activities }) {
+  const zones = getZones()
   const recent = [...activities]
     .sort((a, b) => (a.start_date < b.start_date ? 1 : -1))
     .slice(0, 5)
@@ -21,7 +22,7 @@ export function RecentActivities({ activities }) {
       ) : (
         <ul className="mt-1 divide-y divide-line">
           {recent.map((a) => (
-            <ActivityRow key={a.id} a={a} />
+            <ActivityRow key={a.id} a={a} zones={zones} />
           ))}
         </ul>
       )}
@@ -29,12 +30,12 @@ export function RecentActivities({ activities }) {
   )
 }
 
-function ActivityRow({ a }) {
+function ActivityRow({ a, zones }) {
   const [open, setOpen] = useState(false)
   const [note, setNoteState] = useState(() => getNote(a.id))
 
   const miles = metersToMiles(a.distance)
-  const zone = zone2Compliance(a.average_heartrate, ATHLETE.zone2Min, ATHLETE.zone2Max)
+  const zone = zone2Compliance(a.average_heartrate, zones.min, zones.max)
 
   return (
     <li className="px-4 py-3">

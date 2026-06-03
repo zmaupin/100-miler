@@ -2,11 +2,12 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { ChartCard, AXIS, GRID, TOOLTIP, shortAxisDate } from './common.jsx'
 import { aerobicEfficiencySeries } from '../../lib/aggregates.js'
 import { attachTrend } from '../../lib/charts.js'
-import { ATHLETE } from '../../lib/constants.js'
+import { getZones } from '../../lib/profile.js'
 
 // The hero chart: pace at Zone 2 HR over time. Falling pace = aerobic base building.
 export function AerobicEfficiency({ activities }) {
-  const base = aerobicEfficiencySeries(activities, ATHLETE.zone2Min, ATHLETE.zone2Max)
+  const { min, max } = getZones()
+  const base = aerobicEfficiencySeries(activities, min, max)
   const points = base.filter((d) => d.pace != null).length
 
   if (points < 4) {
